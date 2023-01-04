@@ -13,6 +13,7 @@ def get_products(items):
     for item in items:
         ratings_arr = []
         link = 'http://books.toscrape.com/' + item.find("div", {'class', 'image_container'}).a.get('href')
+        link = link.replace("/../../../", "/catalogue/")
         title = item.h3.a.get('title')
         stock = item.find('p', {'class': 'instock availability'})
         stock = stock.text.replace("\n", "").replace(" ", "") 
@@ -24,7 +25,7 @@ def get_products(items):
         book_dict = { 
             "Title": title, 
             "Price": price.text, 
-            "Link": link, 
+            "Link": link,
             "In stock": is_in_stock, 
             "Ratings": star_rating[1]
         }
@@ -33,15 +34,9 @@ def get_products(items):
         products.append(book_dict)
     return products
 
-# price_including_tax
-# price_excluding_tax
-# number_available (stock)
-# number of reviews
-# product_description
-# category
-# image url
 def get_product(link):
     dictionary = {}
+    link = link.replace("/../../../", "/catalogue/") # may be necessary to format links
     book = request(link)
 
     #book description
@@ -53,8 +48,21 @@ def get_product(link):
     breadcrumb = book.find('ul', {'class': 'breadcrumb'})
     category = breadcrumb.find_all('li')[2]
     dictionary["Category"] = category.a.text
+
+    #image_url
+    thumbnail = book.find('div', {'class': 'thumbnail'})
+    src = thumbnail.img.get('src')
+    image_url = src.replace("../../", "https://books.toscrape.com/")
+    dictionary["Image url"] = image_url
     
     #other book details
+        # price_including_tax
+        # price_excluding_tax
+        # number_available (stock)
+        # number of reviews
+        # product_description
+        # category
+        # image url
     table = book.find('table', {'class': 'table table-striped'})
     all_tr = table.find_all('tr')
     for tr in all_tr:
