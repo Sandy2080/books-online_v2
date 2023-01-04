@@ -1,6 +1,8 @@
 import requests
 import csv
+import os
 from bs4 import BeautifulSoup
+from os.path import exists
 import helpers
 
 # Extract
@@ -87,7 +89,10 @@ def dict_to_csv(filename, items, field_names) :
         print("I/O error")
         
 def download_images(items, key, path):
+    if not exists(path+'/images/'): 
+        os.mkdir(path+'/images/')  
     for p in items:
         image_url = p[key]
         title = image_url.split("/")[-1]
-        helpers.download_img(path+title, image_url)
+        images_path = path+"/images/"+title
+        helpers.download_img(images_path, image_url)

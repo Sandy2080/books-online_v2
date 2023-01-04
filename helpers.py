@@ -29,7 +29,6 @@ def get_all_products(url, soup):
             all_products.append(article)
     return all_products
 
-
 def download_img(directory, img_url):
     img_data = requests.get(img_url).content
     try:
@@ -38,15 +37,14 @@ def download_img(directory, img_url):
     except IOError:
         print("I/O error:" + str(IOError))
 
-
-def create_dir(path):
+def create_directory(path):
     if not exists(path): 
         os.mkdir(path)   
 
-def create_directory(path, name):
+def create_category_directory(path, name):
     dir_category_name = name.split(" ")
     dir_category_name = "_".join(dir_category_name).lower()
-    path = path+dir_category_name
+    path = path+dir_category_name 
     if not exists(path): 
-        os.mkdir(path)   
-    return dir_category_name
+        os.mkdir(path) 
+    return path

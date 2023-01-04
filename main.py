@@ -2,15 +2,14 @@ import functions
 import helpers
 import os
 
-
 fieldnames = ["Title","Category", "Description", "UPC", "Price", "Link", "Image url", "Product Type", "Price (excl. tax)", "Price (incl. tax)", "Tax", "In stock", "Availability", "Number of reviews", "Ratings"]
 soup = functions.request("http://books.toscrape.com/")
 url = "http://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html"
 soup_category = functions.request(url)
 
 # create directories
-helpers.create_dir("data/")
-helpers.create_dir("data/images/")
+helpers.create_directory("data/")
+helpers.create_directory("data/images")
 
 # 1- scraping books of home page
 def get_books():
@@ -35,14 +34,12 @@ def get_all_books_by_category():
     all_books = helpers.get_all_products(url, soup_category)
     all_books = functions.get_products(all_books)
     functions.dict_to_csv('data/all_products.csv', all_books, fieldnames)
-    functions.download_images(all_books, "Image url", "data/images/")
-
+    functions.download_images(all_books, "Image url", "data")
 
 # 3 scraping all books by category
 def get_all_categories_and_all_books():
+    helpers.create_directory("data/categories/") 
     categories = {}
-    if not exists("data/categories/"): 
-        os.mkdir("data/categories/")  
 
     for a in soup.find('div', {'class': 'side_categories'}).ul.find_all('a'):
         category = a.text.replace('\n', '').replace('  ', '')
@@ -66,11 +63,14 @@ def get_all_categories_and_all_books():
             for article in soup_category.find_all('article', {'class': 'product_pod'}):
                 all_articles_by_category.append(article)
             all_products_by_category = functions.get_products(all_articles_by_category)
-        dir_category_name = helpers.create_directory('data/', category)
-        
-        functions.dict_to_csv('data/categories/'+dir_category_name+'/products.csv', all_products_by_category, fieldnames)
+        dir_category_path = helpers.create_category_directory('data/categories/', category)
+        print(dir_category_path+'/products.csv')
+        functions.dict_to_csv(dir_category_path+'/products.csv', all_products_by_category, fieldnames)
+        functions.download_images(all_products_by_category, "Image url", dir_category_path)
 
 get_books()
-all_books = get_all_books_by_category()
+get_all_books_by_category()
+get_all_categories_and_all_books()
+
 
 
