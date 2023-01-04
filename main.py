@@ -1,46 +1,54 @@
 import functions
 import helpers
+import os
 
 
 fieldnames = ["Title","Category", "Description", "UPC", "Price", "Link", "Image url", "Product Type", "Price (excl. tax)", "Price (incl. tax)", "Tax", "In stock", "Availability", "Number of reviews", "Ratings"]
 soup = functions.request("http://books.toscrape.com/")
+url = "http://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html"
+soup_category = functions.request(url)
+
+# create directories
+helpers.create_dir("data/")
+helpers.create_dir("data/images/")
 
 # 1- scraping books of home page
 def get_books():
-    articles = []
+    books = []
     for article in soup.find_all('article', {'class': 'product_pod'}):
-        articles.append(article)
-    products = functions.get_products(articles)
+        books.append(article)
+    products = functions.get_products(books)
     functions.dict_to_csv('data/products.csv', products, fieldnames)
-
+    
 # 2-a scraping books for one category
 def get_books_by_category():
-    articles_sequential_art = []
-    url = "http://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html"
-    soup_sequential_art = functions.request(url)
-
+    all_books_by_category = []
     for article in soup_sequential_art.find_all('article', {'class': 'product_pod'}):
-        articles_sequential_art.append(article)
+        all_books_by_category.append(article)
 
-    products_sequential_art = functions.get_products(articles_sequential_art)
-    functions.dict_to_csv('data/products_sequential_art/products.csv', products_sequential_art, fieldnames)
+    products_sequential_art = functions.get_products(all_books_by_category)
+    functions.dict_to_csv('data/all_products.csv', all_books_by_category, fieldnames)
+    return products_sequential_art
 
 # 2-b scraping books for one category - all pages
 def get_all_books_by_category():
-    all_articles = helpers.get_all_products(url, soup_sequential_art)
-    all_articles = functions.get_products(all_articles)
-    functions.dict_to_csv('data/products_sequential_art/all_products.csv', all_articles, fieldnames)
+    all_books = helpers.get_all_products(url, soup_category)
+    all_books = functions.get_products(all_books)
+    functions.dict_to_csv('data/all_products.csv', all_books, fieldnames)
+    functions.download_images(all_books, "Image url", "data/images/")
+
 
 # 3 scraping all books by category
-
 def get_all_categories_and_all_books():
     categories = {}
+    if not exists("data/categories/"): 
+        os.mkdir("data/categories/")  
 
     for a in soup.find('div', {'class': 'side_categories'}).ul.find_all('a'):
         category = a.text.replace('\n', '').replace('  ', '')
         if 'books_1' not in a.get('href'): 
             categories[category] = 'http://books.toscrape.com/' + a.get('href')
-            
+
     for category, url in categories.items():
         page = functions.request(url)
         page_count = helpers.page_number(page)
@@ -60,6 +68,9 @@ def get_all_categories_and_all_books():
             all_products_by_category = functions.get_products(all_articles_by_category)
         dir_category_name = helpers.create_directory('data/', category)
         
-        functions.dict_to_csv('data/'+dir_category_name+'/products.csv', all_products_by_category, fieldnames)
+        functions.dict_to_csv('data/categories/'+dir_category_name+'/products.csv', all_products_by_category, fieldnames)
+
+get_books()
+all_books = get_all_books_by_category()
 
 

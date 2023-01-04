@@ -1,6 +1,7 @@
 import requests
 import csv
 from bs4 import BeautifulSoup
+import helpers
 
 # Extract
 def request(url): 
@@ -45,13 +46,13 @@ def get_product(link):
         description_p = product_description.find_next_siblings("p")[0].text
         dictionary["Description"] = description_p
     
-    # #book category
+    #book category
     breadcrumb = book.find('ul', {'class': 'breadcrumb'})
     if  breadcrumb is not None: 
         category = breadcrumb.find_all('li')[2]
         dictionary["Category"] = category.a.text
 
-    # #image_url
+    #image_url
     thumbnail = book.find('div', {'class': 'thumbnail'})
     if  thumbnail is not None:
         src = thumbnail.img.get('src')
@@ -73,7 +74,6 @@ def get_product(link):
             key = tr.find('th').text
             value = tr.find('td').text
             dictionary[key] = value
-
     return dictionary
     
 # Load
@@ -85,3 +85,9 @@ def dict_to_csv(filename, items, field_names) :
             writer.writerows(items)
     except IOError:
         print("I/O error")
+        
+def download_images(items, key, path):
+    for p in items:
+        image_url = p[key]
+        title = image_url.split("/")[-1]
+        helpers.download_img(path+title, image_url)
