@@ -12,8 +12,8 @@ def get_products(items):
     products = []
     for item in items:
         ratings_arr = []
-        link = 'http://books.toscrape.com/' + item.find("div", {'class', 'image_container'}).a.get('href')
-        link = link.replace("/../../../", "/catalogue/")
+        link = 'http://books.toscrape.com/catalogue/' + item.find("div", {'class', 'image_container'}).a.get('href')
+        link = link.replace("/../../../", "/")
         title = item.h3.a.get('title')
         stock = item.find('p', {'class': 'instock availability'})
         stock = stock.text.replace("\n", "").replace(" ", "") 
@@ -41,19 +41,22 @@ def get_product(link):
 
     #book description
     product_description = book.find('div', {'id': 'product_description'})
-    description_p = product_description.find_next_siblings("p")[0].text
-    dictionary["Description"] = description_p
-
-    #book category
+    if product_description is not None: 
+        description_p = product_description.find_next_siblings("p")[0].text
+        dictionary["Description"] = description_p
+    
+    # #book category
     breadcrumb = book.find('ul', {'class': 'breadcrumb'})
-    category = breadcrumb.find_all('li')[2]
-    dictionary["Category"] = category.a.text
+    if  breadcrumb is not None: 
+        category = breadcrumb.find_all('li')[2]
+        dictionary["Category"] = category.a.text
 
-    #image_url
+    # #image_url
     thumbnail = book.find('div', {'class': 'thumbnail'})
-    src = thumbnail.img.get('src')
-    image_url = src.replace("../../", "https://books.toscrape.com/")
-    dictionary["Image url"] = image_url
+    if  thumbnail is not None:
+        src = thumbnail.img.get('src')
+        image_url = src.replace("../../", "https://books.toscrape.com/")
+        dictionary["Image url"] = image_url
     
     #other book details
         # price_including_tax
@@ -64,11 +67,12 @@ def get_product(link):
         # category
         # image url
     table = book.find('table', {'class': 'table table-striped'})
-    all_tr = table.find_all('tr')
-    for tr in all_tr:
-        key = tr.find('th').text
-        value = tr.find('td').text
-        dictionary[key] = value
+    if table is not None:
+        all_tr = table.find_all('tr')
+        for tr in all_tr:
+            key = tr.find('th').text
+            value = tr.find('td').text
+            dictionary[key] = value
 
     return dictionary
     
