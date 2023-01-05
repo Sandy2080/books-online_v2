@@ -16,7 +16,7 @@ def get_products(items):
     for item in items:
         ratings_arr = []
         link = 'http://books.toscrape.com/catalogue/' + item.find("div", {'class', 'image_container'}).a.get('href')
-        link = link.replace("/../../../", "/")
+        link = link.replace("/../../../", "/") if link.find("/../../../") else link
         title = item.h3.a.get('title')
         stock = item.find('p', {'class': 'instock availability'})
         stock = stock.text.replace("\n", "").replace(" ", "") 

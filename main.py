@@ -22,7 +22,7 @@ def get_books():
 # 2-a scraping books for one category
 def get_books_by_category():
     all_books_by_category = []
-    for article in soup_sequential_art.find_all('article', {'class': 'product_pod'}):
+    for article in soup_category.find_all('article', {'class': 'product_pod'}):
         all_books_by_category.append(article)
 
     products_sequential_art = functions.get_products(all_books_by_category)
@@ -64,7 +64,6 @@ def get_all_categories_and_all_books():
                 all_articles_by_category.append(article)
             all_products_by_category = functions.get_products(all_articles_by_category)
         dir_category_path = helpers.create_category_directory('data/categories/', category)
-        print(dir_category_path+'/products.csv')
         functions.dict_to_csv(dir_category_path+'/products.csv', all_products_by_category, fieldnames)
         functions.download_images(all_products_by_category, "Image url", dir_category_path)
 
