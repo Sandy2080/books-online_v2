@@ -1,7 +1,7 @@
 import requests
 import os
 from os.path import exists
-import functions
+import etl_functions
 
 def page_number(soup):
     if soup.find('ul', {'class': 'pager'}):
@@ -24,7 +24,7 @@ def get_all_products(url, soup):
     pages_count = page_number(soup)
     all_pages = get_pages(url, pages_count)
     for page in all_pages:
-        page_content = functions.request(page)
+        page_content = etl_functions.request(page)
         for article in page_content.find_all('article', {'class': 'product_pod'}):
             all_products.append(article)
     return all_products

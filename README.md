@@ -56,6 +56,3 @@ pip install -r requirements.txt
 ```
 python3 main.py
 ```
-  
-  # books-online_v2
-# books-online_v2
