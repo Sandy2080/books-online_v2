@@ -1,6 +1,10 @@
-# dependencies
-/node_modules
-/data
-/env
+
 .DS_Store
 __pycache__
+
+# dependencies
+/node_modules
+# extracted data
+/data
+# virtual env
+/env
