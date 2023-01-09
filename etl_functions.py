@@ -98,7 +98,6 @@ def get_product(link):
     '''
     dictionary = {}
     link = link.replace("/../../../", "/")  if "catalogue" in link else link.replace("/../../../", "/catalogue/")
-
     book = get_page_content(link)
 
     #book description

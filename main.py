@@ -22,7 +22,6 @@ def get_books():
     etl_functions.dict_to_csv('data/products.csv', products, fieldnames)
     etl_functions.download_images(products, "Image url", "data")
 
-    
 # 2-a scraping books for one category
 def get_books_by_category():
     all_books_by_category = []
