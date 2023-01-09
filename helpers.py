@@ -145,3 +145,5 @@ def display_ratings(rating_level):
         return "⭐⭐⭐⭐"
     elif rating_level == "five":
         return "⭐⭐⭐⭐⭐"
+    else:
+        return ""

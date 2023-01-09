@@ -47,8 +47,10 @@ def get_products(items):
                    products information 
     '''
     products = []
+    index = 0
     for item in items:
         ratings_arr = []
+        index = index + 1
         link = 'http://books.toscrape.com/catalogue/' + item.find("div", {'class', 'image_container'}).a.get('href')
         link = link.replace("/../../../", "/") if link.find("/../../../") else link
         link = link.replace("/catalogue/catalogue/", "/catalogue/") # the word 'catalogue' may appear twice
@@ -61,6 +63,7 @@ def get_products(items):
         ratings_arr.append(star_rating[1])
 
         book_dict = { 
+            " ": index,
             "Title": title, 
             "Price": price.text, 
             "Link": link,
