@@ -13,7 +13,6 @@ def get_page_content(url):
         ----------
         url : string 
               web page link
-
         Returns
         ----------
         page_content : BeautifulSoup
@@ -33,7 +32,6 @@ def get_products(items):
         ----------
         items : array 
                 web page content and html tags
-
         Returns
         ----------
         products : dictionary
@@ -44,6 +42,8 @@ def get_products(items):
         ratings_arr = []
         link = 'http://books.toscrape.com/catalogue/' + item.find("div", {'class', 'image_container'}).a.get('href')
         link = link.replace("/../../../", "/") if link.find("/../../../") else link
+        link = link.replace("/catalogue/catalogue/", "/catalogue/") # the word 'catalogue' may appear twice
+        print(link)
         title = item.h3.a.get('title')
         stock = item.find('p', {'class': 'instock availability'})
         stock = stock.text.replace("\n", "").replace(" ", "") 
@@ -60,7 +60,7 @@ def get_products(items):
             "Ratings": star_rating[1]
         }
         book_details = get_product(link)
-        book_dict = dict(list(book_dict.items()) + list(book_details.items()))
+        book_dict.update(book_details)
         products.append(book_dict)
     return products
 
@@ -72,8 +72,7 @@ def get_product(link):
         Parameters
         ----------
         link : string 
-              product link
-
+               product link
         Returns
         -------
         dictionary :  a dictionnary 
@@ -87,7 +86,6 @@ def get_product(link):
                     - image url
     '''
     dictionary = {}
-    link = link.replace("/../../../", "/catalogue/") # may be necessary to format links
     book = get_page_content(link)
 
     #book description
@@ -96,7 +94,7 @@ def get_product(link):
         description_p = product_description.find_next_siblings("p")[0].text
         dictionary["Description"] = description_p
     
-    #book category
+    #book category (breadcrumb)
     breadcrumb = book.find('ul', {'class': 'breadcrumb'})
     if  breadcrumb is not None: 
         category = breadcrumb.find_all('li')[2]
@@ -109,6 +107,7 @@ def get_product(link):
         image_url = src.replace("../../", "https://books.toscrape.com/")
         dictionary["Image url"] = image_url
     
+    # table - other book details
     table = book.find('table', {'class': 'table table-striped'})
     if table is not None:
         all_tr = table.find_all('tr')
@@ -161,9 +160,10 @@ def download_images(items, key, path):
     if not exists(path+'/images/'): 
         os.mkdir(path+'/images/')  
     for p in items:
-        image_url = p[key]
-        title = image_url.split("/")[-1]
-        images_path = path+"/images/"+title
-        helpers.download_img(images_path, image_url)
+        if key in p:
+            image_url = p[key]
+            title = image_url.split("/")[-1]
+            images_path = path+"/images/"+title
+            helpers.download_img(images_path, image_url)
 
 print(download_images.__doc__)

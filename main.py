@@ -43,8 +43,8 @@ def get_all_categories_and_all_books():
     dict_all_categories_pages = etl_handlers.get_all_categories_pages(dict_all_categories)
     etl_handlers.download_all_categories_books_images(dict_all_categories_pages)
 
-# get_books()
-# get_all_books_by_category()
+get_books()
+get_all_books_by_category()
 get_all_categories_and_all_books()
 
 
