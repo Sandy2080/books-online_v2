@@ -52,11 +52,10 @@ def get_products(items):
         link = 'http://books.toscrape.com/catalogue/' + item.find("div", {'class', 'image_container'}).a.get('href')
         link = link.replace("/../../../", "/") if link.find("/../../../") else link
         link = link.replace("/catalogue/catalogue/", "/catalogue/") # the word 'catalogue' may appear twice
-        print(link)
         title = item.h3.a.get('title')
         stock = item.find('p', {'class': 'instock availability'})
         stock = stock.text.replace("\n", "").replace(" ", "") 
-        is_in_stock = "In stock" if stock == "Instock" else "not available"
+        is_in_stock = "✔️" if stock == "Instock" else "❌"
         price = item.find('p', {'class': 'price_color'})
         star_rating = item.find('p', {'class', 'star-rating'}).get('class')
         ratings_arr.append(star_rating[1])
@@ -66,7 +65,7 @@ def get_products(items):
             "Price": price.text, 
             "Link": link,
             "In stock": is_in_stock, 
-            "Ratings": star_rating[1].lower() 
+            "Ratings": helpers.display_ratings(star_rating[1].lower())
         }
         book_details = get_product(link)
         book_dict.update(book_details)
@@ -126,6 +125,8 @@ def get_product(link):
             key = tr.find('th').text
             value = tr.find('td').text
             dictionary[key] = value
+    
+    dictionary["Number of reviews"] = "No Reviews" if dictionary["Number of reviews"] == 0 else dictionary["Number of reviews"]
     return dictionary
 
 print(get_product.__doc__)

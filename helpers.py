@@ -131,5 +131,17 @@ def create_category_directory(path, name):
     if not exists(path): 
         os.mkdir(path) 
     return path
-     
+
 print(create_category_directory.__doc__)
+
+def display_ratings(rating_level):
+    if rating_level == "one":
+        return "⭐"
+    elif rating_level == "two":
+        return "⭐⭐"
+    elif rating_level == "three":
+        return "⭐⭐⭐"
+    elif rating_level == "four":
+        return "⭐⭐⭐⭐"
+    elif rating_level == "five":
+        return "⭐⭐⭐⭐⭐"
