@@ -7,11 +7,38 @@ import helpers
 
 # Extract
 def get_page_content(url): 
+    ''' Function : get_page_content
+
+        Parameters
+        ----------
+        url : string 
+              web page link
+
+        Returns
+        ----------
+        page_content : BeautifulSoup
+                       content of web page 
+    '''
     page = requests.get(url)
-    return BeautifulSoup(page.content, 'html.parser')
+    page_content = BeautifulSoup(page.content, 'html.parser')
+    return page_content
+
+print(get_page_content.__doc__)
 
 # Transform
 def get_products(items): 
+    ''' Function : get_products
+
+        Parameters
+        ----------
+        items : array 
+                web page content and html tags
+
+        Returns
+        ----------
+        products : dictionary
+                   products information 
+    '''
     products = []
     for item in items:
         ratings_arr = []
@@ -37,7 +64,28 @@ def get_products(items):
         products.append(book_dict)
     return products
 
+print(get_products.__doc__)
+
 def get_product(link):
+    ''' Function : get_product
+    
+        Parameters
+        ----------
+        link : string 
+              product link
+
+        Returns
+        -------
+        dictionary :  a dictionnary 
+                      additional information for every product :
+                    - price_including_tax
+                    - price_excluding_tax
+                    - number_available (stock)
+                    - number of reviews
+                    - product_description
+                    - category
+                    - image url
+    '''
     dictionary = {}
     link = link.replace("/../../../", "/catalogue/") # may be necessary to format links
     book = get_page_content(link)
@@ -61,14 +109,6 @@ def get_product(link):
         image_url = src.replace("../../", "https://books.toscrape.com/")
         dictionary["Image url"] = image_url
     
-    #other book details
-        # price_including_tax
-        # price_excluding_tax
-        # number_available (stock)
-        # number of reviews
-        # product_description
-        # category
-        # image url
     table = book.find('table', {'class': 'table table-striped'})
     if table is not None:
         all_tr = table.find_all('tr')
@@ -77,9 +117,25 @@ def get_product(link):
             value = tr.find('td').text
             dictionary[key] = value
     return dictionary
-    
+
+print(get_product.__doc__)
+
 # Load
 def dict_to_csv(filename, items, field_names) :
+    ''' Function : dict_to_csv
+
+        Parameters
+        ----------
+        filename: string
+                  name of csv file to download data
+                  
+        items: array 
+               list of products
+
+        field_names: array of strings
+                     list of fieldnames to appear on the csv file
+                     
+    '''
     try:
         with open(filename, 'w') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=field_names)
@@ -87,8 +143,21 @@ def dict_to_csv(filename, items, field_names) :
             writer.writerows(items)
     except IOError:
         print("I/O error")
+
+print(dict_to_csv.__doc__)
         
 def download_images(items, key, path):
+    ''' Function : download_images
+
+        Parameters
+        ----------
+        items : array 
+                image links
+        key : string 
+              key name in dictionary "Image Url"  
+        path : string
+               name of directory where images are downloaded
+    '''
     if not exists(path+'/images/'): 
         os.mkdir(path+'/images/')  
     for p in items:
@@ -96,3 +165,5 @@ def download_images(items, key, path):
         title = image_url.split("/")[-1]
         images_path = path+"/images/"+title
         helpers.download_img(images_path, image_url)
+
+print(download_images.__doc__)
