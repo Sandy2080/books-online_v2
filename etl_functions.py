@@ -98,7 +98,6 @@ def get_product(link):
     '''
     dictionary = {}
     link = link.replace("/../../../", "/")  if "catalogue" in link else link.replace("/../../../", "/catalogue/")
-
     book = get_page_content(link)
 
     #book description
@@ -112,7 +111,7 @@ def get_product(link):
     if  breadcrumb is not None: 
         category = breadcrumb.find_all('li')[2]
         dictionary["Category"] = category.a.text
-
+        
     #image_url
     thumbnail = book.find('div', {'class': 'thumbnail'})
     if  thumbnail is not None:
@@ -155,6 +154,7 @@ def dict_to_csv(filename, items, field_names) :
             writer = csv.DictWriter(csvfile, fieldnames=field_names)
             writer.writeheader()
             writer.writerows(items)
+            print("loading data ..." )
     except IOError:
         print("I/O error")
 
@@ -174,6 +174,8 @@ def download_images(items, key, path):
     '''
     if not exists(path+'/images/'): 
         os.mkdir(path+'/images/')  
+        
+    print("downloading images ..." )
     for p in items:
         if key in p:
             image_url = p[key]
