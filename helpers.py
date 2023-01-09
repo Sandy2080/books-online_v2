@@ -131,5 +131,5 @@ def create_category_directory(path, name):
     if not exists(path): 
         os.mkdir(path) 
     return path
-
+     
 print(create_category_directory.__doc__)

@@ -18,9 +18,18 @@ def get_page_content(url):
         page_content : BeautifulSoup
                        content of web page 
     '''
-    page = requests.get(url)
-    page_content = BeautifulSoup(page.content, 'html.parser')
-    return page_content
+    try:
+        page = requests.get(url)
+        page_content = BeautifulSoup(page.content, 'html.parser')
+        return page_content
+    except requests.exceptions.HTTPError as errh:
+        print ("Http Error:",errh)
+    except requests.exceptions.ConnectionError as errc:
+        print ("Error Connecting:",errc)
+    except requests.exceptions.Timeout as errt:
+        print ("Timeout Error:",errt)
+    except requests.exceptions.RequestException as err:
+        print ("OOps: Something Else",err)
 
 print(get_page_content.__doc__)
 
@@ -57,7 +66,7 @@ def get_products(items):
             "Price": price.text, 
             "Link": link,
             "In stock": is_in_stock, 
-            "Ratings": star_rating[1]
+            "Ratings": star_rating[1].lower() 
         }
         book_details = get_product(link)
         book_dict.update(book_details)
@@ -86,6 +95,8 @@ def get_product(link):
                     - image url
     '''
     dictionary = {}
+    link = link.replace("/../../../", "/")  if "catalogue" in link else link.replace("/../../../", "/catalogue/")
+
     book = get_page_content(link)
 
     #book description
