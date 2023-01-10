@@ -77,9 +77,7 @@ def download_all_categories_books_images(dict_all_categories_pages):
             all_products_by_category = etl_functions.get_products(all_articles_by_category)
 
         dir_category_path = helpers.create_category_directory('data/categories/', category)
-        print("loading data ..." )
         etl_functions.dict_to_csv(dir_category_path+'/products.csv', all_products_by_category, fieldnames)
-        print("downloading images ..." )
         etl_functions.download_images(all_products_by_category, "Image url", dir_category_path)
 
 print(download_all_categories_books_images.__doc__)
