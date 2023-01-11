@@ -31,8 +31,6 @@ def get_page_content(url):
     except requests.exceptions.RequestException as err:
         print ("OOps: Something Else",err)
 
-print(get_page_content.__doc__)
-
 # Transform
 def get_products(items): 
     ''' Function : get_products
@@ -74,8 +72,6 @@ def get_products(items):
         book_dict.update(book_details)
         products.append(book_dict)
     return products
-
-print(get_products.__doc__)
 
 def get_product(link):
     ''' Function : get_product
@@ -131,8 +127,6 @@ def get_product(link):
     reviews = dictionary["Number of reviews"]
     dictionary["Number of reviews"] = "No Reviews" if int(reviews) == 0 else reviews
     return dictionary 
-
-print(get_product.__doc__)
 
 # Load
 def dict_to_csv(filename, items, field_names) :

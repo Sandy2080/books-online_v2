@@ -23,8 +23,6 @@ def get_all_categories(soup):
             dict_all_categories[category] = 'http://books.toscrape.com/' + a.get('href')
     return dict_all_categories
 
-print(get_all_categories.__doc__)
-
 def get_all_categories_pages(dict_all_categories):
     ''' Function : get_all_categories
 
@@ -79,6 +77,3 @@ def download_all_categories_books_images(dict_all_categories_pages):
         dir_category_path = helpers.create_category_directory('data/categories/', category)
         etl_functions.dict_to_csv(dir_category_path+'/products.csv', all_products_by_category, fieldnames)
         etl_functions.download_images(all_products_by_category, "Image url", dir_category_path)
-
-print(download_all_categories_books_images.__doc__)
-
