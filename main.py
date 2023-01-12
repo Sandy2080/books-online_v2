@@ -32,7 +32,7 @@ def get_books_by_category():
 
 # 2-b scraping books for one category - all pages
 def get_all_books_by_category():
-    all_books = helpers.get_all_products(url, soup_category)
+    all_books = helpers.get_all_articles(url, soup_category)
     all_books = etl_functions.get_products(all_books)
     etl_functions.dict_to_csv('data/all_products.csv', all_books, fieldnames)
     etl_functions.download_images(all_books, "Image url", "data")
@@ -44,9 +44,9 @@ def get_all_categories_and_all_books():
     dict_all_categories_pages = etl_handlers.get_all_categories_pages(dict_all_categories)
     etl_handlers.download_all_categories_books_images(dict_all_categories_pages)
 
-get_books() 
-get_all_categories_and_all_books()
-# get_all_books_by_category()
+# get_books() 
+# get_all_categories_and_all_books()
+get_all_books_by_category()
 
 
 

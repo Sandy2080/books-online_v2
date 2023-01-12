@@ -22,8 +22,6 @@ def get_number_of_pages(soup):
         page_count = int(pages[-1])
     return page_count
 
-print(get_number_of_pages.__doc__)
-
 def get_category_pages(url, count):
     ''' Function : get_category_pages
 
@@ -46,9 +44,7 @@ def get_category_pages(url, count):
         index +=1
     return urls
 
-print(get_category_pages.__doc__)
-
-def get_all_products(url, soup):
+def get_all_articles(url, soup):
     ''' Function : get_all_products
 
         Parameters
@@ -71,8 +67,6 @@ def get_all_products(url, soup):
             all_products.append(article)
     return all_products
 
-print(get_all_products.__doc__)
-
 def download_img(directory, img_url):
     ''' Function : download_img
 
@@ -93,8 +87,6 @@ def download_img(directory, img_url):
     except IOError:
         print("I/O error:" + str(IOError))
 
-print(download_img.__doc__)
-
 def create_directory(path):
     ''' Function : download_img
 
@@ -108,8 +100,6 @@ def create_directory(path):
     '''
     if not exists(path): 
         os.mkdir(path)   
-
-print(create_directory.__doc__)
 
 def create_category_directory(path, name):
     ''' Function : download_img
@@ -131,8 +121,6 @@ def create_category_directory(path, name):
     if not exists(path): 
         os.mkdir(path) 
     return path
-
-print(create_category_directory.__doc__)
 
 def display_ratings(rating_level):
     if rating_level == "one":
