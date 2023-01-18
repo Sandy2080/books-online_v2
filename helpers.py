@@ -1,11 +1,11 @@
+from bs4 import BeautifulSoup
 import requests
 import os
 from os.path import exists
 import etl_functions
 
-def get_number_of_pages(soup):
-    ''' Function : get_number_page
-
+def get_number_of_pages(soup : BeautifulSoup):
+    '''
         Parameters
         ----------
         soup : BeautifulSoup
@@ -22,9 +22,8 @@ def get_number_of_pages(soup):
         page_count = int(pages[-1])
     return page_count
 
-def get_category_pages(url, count):
-    ''' Function : get_category_pages
-
+def get_category_pages(url : str, count: int):
+    '''
         Parameters
         ----------
         url : string
@@ -44,9 +43,8 @@ def get_category_pages(url, count):
         index +=1
     return urls
 
-def get_all_articles(url, soup):
-    ''' Function : get_all_products
-
+def get_all_articles(url: str, soup: BeautifulSoup):
+    '''
         Parameters
         ----------
         url : string
@@ -67,8 +65,9 @@ def get_all_articles(url, soup):
             all_products.append(article)
     return all_products
 
-def download_img(directory, img_url):
-    ''' Function : download_img
+def download_img(directory: str, img_url: str):
+    '''
+        to create a path to directory and download image from url
 
         Parameters
         ----------
@@ -82,14 +81,13 @@ def download_img(directory, img_url):
     '''
     img_data = requests.get(img_url).content
     try:
-        with open(directory, 'wb') as handler: 
+        with open(directory, 'wb', encoding='utf8') as handler: 
             handler.write(img_data) 
     except IOError:
         print("I/O error:" + str(IOError))
 
-def create_directory(path):
-    ''' Function : download_img
-
+def create_directory(path: str):
+    '''
         Parameters
         ----------
         path : string
@@ -101,9 +99,8 @@ def create_directory(path):
     if not exists(path): 
         os.mkdir(path)   
 
-def create_category_directory(path, name):
-    ''' Function : download_img
-
+def create_category_directory(path: str, name: str):
+    '''
         Parameters
         ----------
         path : string
@@ -122,16 +119,16 @@ def create_category_directory(path, name):
         os.mkdir(path) 
     return path
 
-def display_ratings(rating_level):
+def display_ratings(rating_level: str):
     if rating_level == "one":
-        return "⭐"
+        return "1"
     elif rating_level == "two":
-        return "⭐⭐"
+        return "2"
     elif rating_level == "three":
-        return "⭐⭐⭐"
+        return "3"
     elif rating_level == "four":
-        return "⭐⭐⭐⭐"
+        return "4"
     elif rating_level == "five":
-        return "⭐⭐⭐⭐⭐"
+        return "5"
     else:
         return ""

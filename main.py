@@ -3,7 +3,7 @@ import etl_handlers
 import helpers
 import os
 
-fieldnames = [" ", "Title","Category", "Description", "UPC", "Price", "Link", "Image url", "Product Type", "Price (excl. tax)", "Price (incl. tax)", "Tax", "In stock", "Availability", "Number of reviews", "Ratings"]
+fieldnames = [" ", "Title","Category", "Description", "UPC", "Price", "Link", "Image url", "Product Type", "Price (excl. tax)", "Price (incl. tax)", "Availability", "Ratings"]
 url = "http://books.toscrape.com/"
 url_category = "http://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html"
 soup = etl_functions.get_page_content("http://books.toscrape.com/")
@@ -15,6 +15,7 @@ helpers.create_directory("data/images")
 
 # 1- scraping books of home page
 def get_books():
+    print("loading...")
     books = []
     for article in soup.find_all('article', {'class': 'product_pod'}):
         books.append(article)
@@ -32,6 +33,7 @@ def get_books_by_category():
 
 # 2-b scraping books for one category - all pages
 def get_all_books_by_category():
+    print("loading...")
     all_books = helpers.get_all_articles(url, soup_category)
     all_books = etl_functions.get_products(all_books)
     etl_functions.dict_to_csv('data/all_products.csv', all_books, fieldnames)
@@ -39,14 +41,16 @@ def get_all_books_by_category():
 
 # 3 scraping all books by category
 def get_all_categories_and_all_books():
+    print("loading...")
     helpers.create_directory("data/categories/") 
     dict_all_categories = etl_handlers.get_all_categories(soup)
     dict_all_categories_pages = etl_handlers.get_all_categories_pages(dict_all_categories)
     etl_handlers.download_all_categories_books_images(dict_all_categories_pages)
 
-# get_books() 
+get_books() 
+# get_all_books_by_category()
 # get_all_categories_and_all_books()
-get_all_books_by_category()
+
 
 
 

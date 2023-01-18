@@ -5,10 +5,8 @@ from bs4 import BeautifulSoup
 from os.path import exists
 import helpers
 
-# Extract
-def get_page_content(url): 
-    ''' Function : get_page_content
-
+def get_page_content(url: str) -> BeautifulSoup : 
+    '''
         Parameters
         ----------
         url : string 
@@ -31,10 +29,8 @@ def get_page_content(url):
     except requests.exceptions.RequestException as err:
         print ("OOps: Something Else",err)
 
-# Transform
-def get_products(items): 
-    ''' Function : get_products
-
+def get_products(items:list[BeautifulSoup]) -> dict[str, list[str]]: 
+    ''' 
         Parameters
         ----------
         items : array 
@@ -68,14 +64,17 @@ def get_products(items):
             "In stock": is_in_stock, 
             "Ratings": helpers.display_ratings(star_rating[1].lower())
         }
+      
         book_details = get_product(link)
+        del book_details['Tax']
+        del book_dict['In stock']
+        del book_details['Number of reviews']
         book_dict.update(book_details)
         products.append(book_dict)
     return products
 
-def get_product(link):
-    ''' Function : get_product
-    
+def get_product(link: str) -> dict[str, list[str]]:
+    ''' 
         Parameters
         ----------
         link : string 
@@ -123,15 +122,11 @@ def get_product(link):
             key = tr.find('th').text
             value = tr.find('td').text
             dictionary[key] = value
+    dictionary['Availability'] = dictionary['Availability'].split("(")[1].replace(")", "")
+    return dictionary  
 
-    reviews = dictionary["Number of reviews"]
-    dictionary["Number of reviews"] = "No Reviews" if int(reviews) == 0 else reviews
-    return dictionary 
-
-# Load
-def dict_to_csv(filename, items, field_names) :
-    ''' Function : dict_to_csv
-
+def dict_to_csv(filename: str, items: dict[str, str], field_names : list[str]) :
+    '''
         Parameters
         ----------
         filename: string
@@ -152,12 +147,9 @@ def dict_to_csv(filename, items, field_names) :
             print("loading data ..." )
     except IOError:
         print("I/O error")
-
-print(dict_to_csv.__doc__)
         
-def download_images(items, key, path):
-    ''' Function : download_images
-
+def download_images(items: dict[str, list[str]], key: str, path: str):
+    '''
         Parameters
         ----------
         items : array 
@@ -177,5 +169,3 @@ def download_images(items, key, path):
             title = image_url.split("/")[-1]
             images_path = path+"/images/"+title
             helpers.download_img(images_path, image_url)
-
-print(download_images.__doc__)

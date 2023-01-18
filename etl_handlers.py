@@ -1,11 +1,10 @@
+from bs4 import BeautifulSoup
 import etl_functions
 import helpers
 
-fieldnames = [" ","Title","Category", "Description", "UPC", "Price", "Link", "Image url", "Product Type", "Price (excl. tax)", "Price (incl. tax)", "Tax", "In stock", "Availability", "Number of reviews", "Ratings"]
-
-def get_all_categories(soup):
-    ''' Function : get_all_categories
-
+fieldnames = [" ", "Title","Category", "Description", "UPC", "Price", "Link", "Image url", "Product Type", "Price (excl. tax)", "Price (incl. tax)", "Availability", "Ratings"]
+def get_all_categories(soup: BeautifulSoup) -> dict[str, list[str]]:
+    '''
         Parameters
         ----------
         soup : BeautifulSoup
@@ -23,9 +22,8 @@ def get_all_categories(soup):
             dict_all_categories[category] = 'http://books.toscrape.com/' + a.get('href')
     return dict_all_categories
 
-def get_all_categories_pages(dict_all_categories):
-    ''' Function : get_all_categories
-
+def get_all_categories_pages(dict_all_categories: dict[str, list[str]]) -> dict[str, list[str]]:
+    '''
         Parameters
         ----------
         dict_all_categories : dictionary
@@ -48,11 +46,8 @@ def get_all_categories_pages(dict_all_categories):
             dict_all_categories_pages[category] = [url]
     return dict_all_categories_pages
 
-print(get_all_categories_pages.__doc__)
-
-def download_all_categories_books_images(dict_all_categories_pages):
-    ''' Function : download_all_categories_books_images
-
+def download_all_categories_books_images(dict_all_categories_pages : dict[str, list[str]]):
+    '''
         Parameters
         ----------
         dict_all_categories_pages : dictionary
